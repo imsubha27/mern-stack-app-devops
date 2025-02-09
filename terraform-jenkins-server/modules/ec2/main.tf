@@ -5,8 +5,8 @@ resource "aws_instance" "my-ec2" {
   vpc_security_group_ids = [var.security_group_id]
   subnet_id = var.default_subnet_id
   key_name = var.key_name
-  iam_instance_profile = var.iam_role_name
-  
+  iam_instance_profile   = var.instance_profile_name
+
   root_block_device {
     volume_size = var.volume_size
   }
@@ -26,10 +26,6 @@ resource "aws_instance" "my-ec2" {
     }
 
     inline = [
-      # Install Java
-      "sudo apt update -y",
-      "sudo apt install openjdk-17-jdk openjdk-17-jre -y",
-      "java -version",
 
       # Install AWS CLI
       "sudo apt update -y",
@@ -76,18 +72,26 @@ resource "aws_instance" "my-ec2" {
 
 
       # Installing eksctl
-      "curl --silent --location 'https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz' | tar xz -C /tmp",
+      "sudo apt install -y curl tar",
+      "curl --silent --location https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz | tar xz -C /tmp",
       "sudo mv /tmp/eksctl /usr/local/bin",
       "eksctl version",
 
       #Install helm
       "sudo snap install helm --classic",
 
+      # Install Java
+      "sudo apt update -y",
+      "sudo apt install openjdk-17-jdk openjdk-17-jre -y",
+      "java -version",
+
       # Install Jenkins
-      "curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null",
-      "echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null",
+      "sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key",
+      "echo \"deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/\" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null",
       "sudo apt-get update -y",
-      "sudo apt-get install jenkins -y",
+      "sudo apt-get install -y jenkins",
+      "sudo systemctl start jenkins",
+      "sudo systemctl enable jenkins",
 
       # Get Jenkins initial login password
       "ip=$(curl -s ifconfig.me)",

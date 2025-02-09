@@ -1,26 +1,26 @@
-resource "aws_iam_role" "ec2_admin" {
-  name = "ec2-admin-role"
+resource "aws_iam_role" "ec2_admin_role" {
+  name = var.role_name
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {"Service": "ec2.amazonaws.com"},
-      "Effect": "Allow"
-    }
-  ]
-}
-EOF
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
 }
 
-resource "aws_iam_policy_attachment" "admin_attach" {
-  name       = "admin-attachment"
-  roles      = [aws_iam_role.ec2_admin.name]
+resource "aws_iam_role_policy_attachment" "admin_attach" {
+  role       = aws_iam_role.ec2_admin_role.name
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
-output "role_name" {
-  value = aws_iam_role.ec2_admin.name
+resource "aws_iam_instance_profile" "ec2_instance_profile" {
+  name = var.instance_profile_name
+  role = aws_iam_role.ec2_admin_role.name
 }

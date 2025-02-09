@@ -21,8 +21,8 @@ variable "volume_size" {
   type        = string
 }
 
-variable "iam_role_name" {
-  description = "Iam role profile for EC2"
+variable "instance_profile_name" {
+  description = "IAM instance profile name"
   type        = string
 }
 

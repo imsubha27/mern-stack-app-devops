@@ -5,6 +5,8 @@ module "security-group" {
 
 module "iam-role" {
   source = "./modules/iam-role"
+  role_name = "EC2AdminRole"
+  instance_profile_name = "EC2AdminProfile"
 }
 
 module "ec2" {
@@ -17,6 +19,6 @@ module "ec2" {
     instance_type = "t2.medium"
     ami = "ami-0e1bed4f06a3b463d"  #Ubuntu 22.04
     security_group_id = module.security-group.security_group_id
-    iam_role_name   = module.iam-role.role_name
+    instance_profile_name = module.iam-role.instance_profile_name
     instance_name = "Jenkins-Server"
 }
