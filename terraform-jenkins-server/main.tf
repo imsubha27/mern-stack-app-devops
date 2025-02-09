@@ -1,6 +1,10 @@
 module "security-group" {
     source = "./modules/security-group"
-    vpc_id = "vpc-0cb1934a19b26c0d1"
+    vpc_id = "vpc-0cb1934a19b26c0d1" #Default vpc
+}
+
+module "iam-role" {
+  source = "./modules/iam-role"
 }
 
 module "ec2" {
@@ -13,5 +17,6 @@ module "ec2" {
     instance_type = "t2.medium"
     ami = "ami-0e1bed4f06a3b463d"  #Ubuntu 22.04
     security_group_id = module.security-group.security_group_id
+    iam_role_name   = module.iam-role.role_name
     instance_name = "Jenkins-Server"
 }

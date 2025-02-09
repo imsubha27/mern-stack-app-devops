@@ -1,0 +1,4 @@
+# Ignore Terraform local directories
+*.terraform/
+*.terraform.lock.hcl
+*ec2-key.pem

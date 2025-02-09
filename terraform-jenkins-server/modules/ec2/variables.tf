@@ -21,6 +21,11 @@ variable "volume_size" {
   type        = string
 }
 
+variable "iam_role_name" {
+  description = "Iam role profile for EC2"
+  type        = string
+}
+
 variable "security_group_id" {
   description = "The security group ID to associate with the EC2 instance"
   type        = string
@@ -32,5 +37,5 @@ variable "default_subnet_id" {
 }
 
 variable "instance_name" {
-  type = string
+  type        = string
 }
